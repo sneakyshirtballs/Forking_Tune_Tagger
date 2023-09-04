@@ -17,3 +17,5 @@ match media_type:
         music_handler.handle_music(configs)
     case _:
         p_terminate(f"{media_type} downloading is not available yet!")
+
+p_success("Forking Tune Tagger has *forked* its way to THE GOOD PLACE!")
