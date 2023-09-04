@@ -16,8 +16,8 @@ def parse_config_file(file_path):
     match = re.search(pattern, text)
     
     if match:
-        media_type, resolution, subtitles, format, queries = match.groups()
-        
+        media_type, resolution, subtitles, download_format, queries = match.groups()
+
         # Split the queries string into a list by lines
         queries = queries.strip().split('\n')
         
@@ -25,16 +25,16 @@ def parse_config_file(file_path):
             validate_media_type(media_type),
             validate_resolution(resolution),
             validate_subtitles(subtitles),
-            validate_format(format),
+            validate_format(download_format),
             validate_queries(queries)
         ]):
-            return [{
+            return {
                 "Media_Type": media_type,
                 "Resolution": resolution,
                 "Subtitles": subtitles,
-                "Format": format,
+                "Format": download_format,
                 "Queries": queries
-            }]
+            }
         else: p_terminate("media_config.txt has unsupported type/value!")
     
     else: p_terminate("media_config.txt is not formatted properly!")
