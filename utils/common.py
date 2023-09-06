@@ -125,7 +125,7 @@ def get_videos_from_playlist(playlist_url):
                     if 'id' in entry:
                         video_link = f"https://www.youtube.com/watch?v={entry['id']}"
                         video_title = entry.get('title', 'Unknown Title')
-                        p_status(f"[DETECTED] {video_title}")
+                        p_status(f"[DETECTED] {video_title}", delay=0.2)
                         videos.append(video_link)
                 
                 return videos
