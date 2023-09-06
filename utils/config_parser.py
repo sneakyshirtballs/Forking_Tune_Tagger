@@ -22,6 +22,7 @@ def parse_config_file(file_path):
 
         # Split the queries string into a list by lines
         queries = queries.strip().split('\n')
+        validated_queries = validate_queries(queries)
         
         if all([
             validate_download_path(download_path),
@@ -29,7 +30,6 @@ def parse_config_file(file_path):
             validate_resolution(resolution),
             validate_subtitles(subtitles),
             validate_format(download_format),
-            validate_queries(queries)
         ]):
             return {
                 "Download_Path": download_path,
@@ -37,7 +37,7 @@ def parse_config_file(file_path):
                 "Resolution": resolution,
                 "Subtitles": subtitles,
                 "Format": download_format,
-                "Queries": queries
+                "Queries": validated_queries
             }
         else: p_terminate("media_config.txt has unsupported type/value!")
     
