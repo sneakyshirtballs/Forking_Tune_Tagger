@@ -75,26 +75,61 @@ def update_download_history(download_path, download_format):
     # Additional logic can be added here as needed.
 
 
+
 def lookup_yt_vid(query):
     try:
         ydl_opts = {
             'quiet': True,
         }
+        if not query.startswith("http"): ydl_opts['default_search'] = 'ytsearch'
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(query, download=False)
             
-            if 'entries' in info_dict:
-                video_info = info_dict['entries'][0]
+            video_info = info_dict.get('entries', [info_dict])[0]
+            if 'id' in video_info:
                 # Extract relevant metadata including channel name
+                p_status(f"[Detected] {video_info.get('title', '')}")
                 return {
                     "title": video_info.get('title', ''),
-                    "thumbnail_url": video_info.get('thumbnail', ''),
-                    "video_id": video_info.get('id', ''),
-                    "channel_name": video_info.get('channel', ''),
+                    "video_id": video_info['id'],
                     # Add more metadata fields as needed
                 }
-            else:
-                p_terminate(f"No YouTube video found for query: {query}")
+            
+            p_warning(f"Video unavailable: {query}")
+            choice = input("Do you want to continue processing other videos? (yes/no): ").strip().lower()
+            if choice != "yes":
+                p_terminate("Video unavailable: User chose to terminate")
+
     except Exception as e:
-        p_terminate(f"Error while looking up YouTube video: {str(e)}")
+        p_warning(f"Error while looking up YouTube video {query}: {str(e)}")
+        choice = input("Do you want to continue processing other videos? (yes/no): ").strip().lower()
+        if choice != "yes":
+            p_terminate("Error Looking Up Video: User chose to terminate")
+
+
+# Helper Function - Get Video From Playlist
+def get_videos_from_playlist(playlist_url):
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'extract_flat': True,  # Extract all videos from the playlist
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(playlist_url, download=False)
+            
+            if 'entries' in info_dict:
+                videos = []
+                for entry in info_dict['entries']:
+                    if 'id' in entry:
+                        video_link = f"https://www.youtube.com/watch?v={entry['id']}"
+                        video_title = entry.get('title', 'Unknown Title')
+                        p_status(f"[DETECTED] {video_title}")
+                        videos.append(video_link)
+                
+                return videos
+            else:
+                p_terminate(f"No videos found in playlist: {playlist_url}")
+    except Exception as e:
+        p_terminate(f"Error while getting videos from playlist: {str(e)}")
