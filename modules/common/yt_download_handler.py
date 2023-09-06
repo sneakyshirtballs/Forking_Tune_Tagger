@@ -1,3 +1,4 @@
+import os, yt_dlp
 from utils.custom_print import (p_status, p_success, p_terminate, p_warning)
 from utils.common import update_download_history
 
@@ -10,6 +11,13 @@ def handle_yt_download(configs, create_download_options):
     
     p_status(f"Downloading {media_type} - Total {len(queries)} Queries")
 
-    p_status(queries)
+    for url in queries:
+        download_options = create_download_options()
+        with yt_dlp.YoutubeDL(download_options) as ydl:
+            try:
+                ydl.download(url)
+            except yt_dlp.utils.DownloadError as e:
+                p_terminate(f"{str(e)}")
+                
 
     p_status(f"Finished Downloading {media_type}")
