@@ -1,5 +1,6 @@
 import os
-from utils.custom_print import p_terminate
+from utils.custom_print import p_terminate, p_status, p_warning
+from utils.common import lookup_yt_vid, get_videos_from_playlist
 
 # Function to validate download path
 def validate_download_path(path):
@@ -37,4 +38,32 @@ def validate_subtitles(value):
 
 # Function to validate queries
 def validate_queries(queries):
-    return True # For Simplicity
+    validated_queries = []  # Store validated queries here
+
+    for query in queries:
+        # Check if its a channel link
+        if "/channel/" in query:
+            p_warning(f"Skipping Query, Channel Link Detected: {query}")
+            continue
+        
+        # Check if its a Playlist, if so, extend validated_queries with it
+        if "/playlist?list=" in query:
+            p_warning(f"Playlist link detected: {query}")
+            choice = input("Do you want to download this playlist? (yes/no): ").strip().lower()
+            if choice == "yes":
+                # Get individual video links from the playlist
+                video_links = get_videos_from_playlist(query)
+                validated_queries.extend(video_links)
+                continue
+            else:
+                p_status("Playlist skipped.")
+                continue
+        
+        # If the interpreter comes here, it means It's a valid video link or search term
+        video_info = lookup_yt_vid(query)
+        video_link = f"https://www.youtube.com/watch?v={video_info['video_id']}"
+        validated_queries.append(video_link)
+        continue
+
+
+    return validated_queries
