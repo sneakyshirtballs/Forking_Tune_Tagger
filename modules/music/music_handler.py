@@ -3,9 +3,7 @@ from utils.common import (write_file_outtmpl)
 from modules.common import yt_download_handler
 
 def handle_music(configs):
-    media_type, download_format, download_path = configs["Media_Type"], configs["Format"], configs["Download_Path"]
-
-    p_status(f"Creating Download Options For {media_type}")
+    download_format, download_path = configs["Format"], configs["Download_Path"]
     
     def create_download_options():
         download_options = {
