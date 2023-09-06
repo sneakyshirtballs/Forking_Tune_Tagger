@@ -7,9 +7,8 @@ file_path = "/home/hakuneko/Forking_Tune_Tagger_Test/media_config.txt"
 
 # Use the config_parser module to parse and validate the configuration file
 configs = parse_config_file(file_path)
-
 media_type = configs["Media_Type"]
-p_success(f"Detected Media Type: {media_type}")
+
 
 # Call appropriate functions based on media_type
 match media_type:
