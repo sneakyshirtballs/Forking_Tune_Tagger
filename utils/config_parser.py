@@ -1,5 +1,5 @@
 import re
-from utils.custom_print import (p_status, p_terminate, p_warning)
+from utils.custom_print import (p_status, p_terminate, p_success)
 from validators.media_config_validators import (
     validate_download_path,
     validate_media_type,
@@ -20,9 +20,8 @@ def parse_config_file(file_path):
     if match:
         download_path, media_type, resolution, subtitles, download_format, queries = match.groups()
 
-        # Split the queries string into a list by lines
-        queries = queries.strip().split('\n')
-        validated_queries = validate_queries(queries)
+        p_success(f"Detected Media Type: {media_type}")
+        p_status(f"Creating Download Options For {media_type}")
         
         if all([
             validate_download_path(download_path),
@@ -31,6 +30,9 @@ def parse_config_file(file_path):
             validate_subtitles(subtitles),
             validate_format(download_format),
         ]):
+            # Split the queries string into a list by lines
+            queries = queries.strip().split('\n')
+            validated_queries = validate_queries(queries)
             return {
                 "Download_Path": download_path,
                 "Media_Type": media_type,
