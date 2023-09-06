@@ -1,5 +1,5 @@
-import os, yt_dlp
-from utils.custom_print import (p_status, p_success, p_terminate, p_warning)
+import yt_dlp
+from utils.custom_print import (p_status, p_terminate)
 from utils.common import update_download_history
 
 def handle_yt_download(configs, create_download_options):
