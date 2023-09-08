@@ -2,7 +2,7 @@ import yt_dlp
 from utils.custom_print import (p_status, p_terminate)
 from utils.common import update_download_history
 
-def handle_yt_download(configs, create_download_options):
+def handle_yt_download(configs, create_download_options, embed_metadata):
     queries, media_type = configs["Queries"], configs["Media_Type"]
 
     # Updates previous download history
@@ -14,17 +14,28 @@ def handle_yt_download(configs, create_download_options):
     for url in queries:
         download_options = create_download_options()
 
-        # here after downloading, send the file info in
-        # recognize_and_update_metadata type function to
-        # update the metadata of the file, also send the thumbnails
-        # title, channel name, channel icon as parameters
-        # if the recognize... func fails to update its metadata, use
-        # the title, channel name thumbnails as title, artist, cover in mutagen
         with yt_dlp.YoutubeDL(download_options) as ydl:
             try:
-                ydl.download(url)
+                info = ydl.extract_info(url, download=False)  # Extract video info without downloading
+
+                # Check if info_dict is None or if the video has already been recorded in the archive
+                if info is None or info.get('archive'):
+                    continue  # Skip processing for this video
+
+                file_path = ydl.prepare_filename(info)  # Get the file path
+                ydl.download([url])  # Download the video
+
+                # Create a dictionary to encapsulate all the information
+                file_info = {
+                    'file_path': file_path,
+                    'title': info.get('title', 'Unknown Title'),
+                    'channel_name': info.get('uploader', 'Unknown Channel'),
+                    'thumbnail': info.get('thumbnail')
+                }
+
+                embed_metadata(file_info)
+
             except yt_dlp.utils.DownloadError as e:
                 p_terminate(f"{str(e)}")
-                
-
+    
     p_status(f"Finished Downloading {media_type}")
