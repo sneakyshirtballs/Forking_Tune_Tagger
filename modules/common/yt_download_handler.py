@@ -2,7 +2,7 @@ import yt_dlp
 from utils.custom_print import (p_status, p_terminate)
 from utils.common import update_download_history
 
-def handle_yt_download(configs, create_download_options, embed_metadata):
+async def handle_yt_download(configs, create_download_options, embed_metadata):
     queries, media_type = configs["Queries"], configs["Media_Type"]
 
     # Updates previous download history
@@ -30,10 +30,11 @@ def handle_yt_download(configs, create_download_options, embed_metadata):
                     'file_path': file_path,
                     'title': info.get('title', 'Unknown Title'),
                     'channel_name': info.get('uploader', 'Unknown Channel'),
-                    'thumbnail': info.get('thumbnail')
+                    'thumbnail': info.get('thumbnail'),
+                    'download_format': download_format
                 }
 
-                embed_metadata(file_info)
+                await embed_metadata(file_info)
 
             except yt_dlp.utils.DownloadError as e:
                 p_terminate(f"{str(e)}")
