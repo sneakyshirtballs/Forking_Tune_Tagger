@@ -13,6 +13,13 @@ def handle_yt_download(configs, create_download_options):
 
     for url in queries:
         download_options = create_download_options()
+
+        # here after downloading, send the file info in
+        # recognize_and_update_metadata type function to
+        # update the metadata of the file, also send the thumbnails
+        # title, channel name, channel icon as parameters
+        # if the recognize... func fails to update its metadata, use
+        # the title, channel name thumbnails as title, artist, cover in mutagen
         with yt_dlp.YoutubeDL(download_options) as ydl:
             try:
                 ydl.download(url)
