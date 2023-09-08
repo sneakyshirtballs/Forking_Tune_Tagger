@@ -60,21 +60,66 @@ def update_download_history(download_path, download_format):
     if os.path.exists(download_history_txt_path):
         # Read the content of the download history text file
         with open(download_history_txt_path, 'r') as history_file:
-            download_links = [line.strip() for line in history_file.readlines()]
+            # reading download history and removing "youtube", only need video_id
+            download_links = [line.strip().split(' ', 1)[1] for line in history_file.readlines()]
         
         # Check if the number of download links matches the number of matching files
         if len(download_links) != len(detected_files):
-            p_terminate("Mismatch between the number of download links and the number of detected files.")
+            p_warning("Mismatch between the number of Download Links and the number of Detected Files.")
             
             # handling the mismatch
-        else:
-            p_success("Download history is up to date.")    
-    else:
-        p_warning("No previous download history found!")
+            if len(download_links) > len(detected_files):
+                p_warning(f"Some {download_format} files Were Deleted.", delay=1)
+                p_warning(f"Updating Unique IDs From {download_format} Files:")
+                video_ids = fix_unique_ids(download_path, download_format)
+
+                with open(download_history_txt_path, 'w') as write_history_file:
+                    p_warning("Updating .download_history.txt File")
+                    for video_id in video_ids:
+                        write_history_file.write(f'{video_id}\n')
+
+                p_success("Updated Download History.")
+            
+            else: p_terminate(f"Detected More Files Than Recorded On History, Something Went Wrong!")
+
+        else: p_success("Download history is up to date.")    
+
+    else: p_warning("No previous download history found!")
     
-    # Additional logic can be added here as needed.
 
+# fix unique ids from files in a directory
+# by renaming them if nessesary
+def fix_unique_ids(directory, file_extension):
+    all_files = [file for file in os.listdir(directory) if file.endswith(file_extension)]
 
+    # Sort the file_list based on unique_id using a lambda function
+    sorted_file_list = sorted(all_files, key=lambda x: extract_file_info(x)['unique_id'])
+    
+    video_ids = []
+
+    expected_id = 0
+    for file in sorted_file_list:
+        result = extract_file_info(file)
+
+        title = result["title"]
+        current_id = result["unique_id"]
+        video_id = result["video_id"]
+
+        video_ids.append(f"youtube {video_id}")
+
+        if current_id != expected_id:
+            p_warning(f"Current id is: {current_id}, it should be {expected_id}")
+            
+            title = "{" + title + "}"
+            video_id = "{" + video_id + "}"
+            str_expected_id = "{" + str(expected_id) + "}"
+
+            new_file_name = f"{directory}/{str_expected_id} {title} {video_id}.{file_extension}"
+            os.rename(os.path.join(directory, file), os.path.join(directory, new_file_name))
+
+        expected_id += 1
+    
+    return video_ids
 
 def lookup_yt_vid(query):
     try:
