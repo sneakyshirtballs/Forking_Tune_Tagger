@@ -1,4 +1,5 @@
-import re, os, yt_dlp
+import re, os, yt_dlp, requests, io
+from PIL import Image
 from utils.custom_print import (p_status, p_success, p_terminate, p_warning)
 
 def write_file_outtmpl(download_path, download_format):
@@ -178,3 +179,52 @@ def get_videos_from_playlist(playlist_url):
                 p_terminate(f"No videos found in playlist: {playlist_url}")
     except Exception as e:
         p_terminate(f"Error while getting videos from playlist: {str(e)}")
+
+# Helper Function For Downloading Thumbnails
+def download_thumbnail(url):
+    # Download and return the thumbnail image as bytes
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            thumbnail_data = response.content
+
+            # Check if the downloaded image is in WebP format
+            if url.lower().endswith('.webp'):
+                thumbnail_data = convert_webp_to_jpeg(thumbnail_data)
+
+            return thumbnail_data
+        else:
+            return None
+    except Exception as e:
+        print(f"Error downloading thumbnail: {e}")
+        return None
+    
+# Function to convert WebP to JPEG
+def convert_webp_to_jpeg(webp_data):
+    try:
+        img = Image.open(io.BytesIO(webp_data))
+        
+        # # Calculate the coordinates for cropping the center part
+        # width, height = img.size
+        # if width > height:
+        #     left = (width - height) / 2
+        #     right = (width + height) / 2
+        #     top = 0
+        #     bottom = height
+        # else:
+        #     left = 0
+        #     right = width
+        #     top = (height - width) / 2
+        #     bottom = (height + width) / 2
+        
+        # # Crop the image to a square
+        # img = img.crop((left, top, right, bottom))
+        
+        # # Convert to JPEG
+        jpeg_data = io.BytesIO()
+        img.save(jpeg_data, 'JPEG')
+        return jpeg_data.getvalue()
+    except Exception as e:
+        # Handle any errors that occur during conversion
+        print(f"Error converting WebP to square JPEG: {str(e)}")
+        return None
