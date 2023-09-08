@@ -1,4 +1,4 @@
-import yt_dlp
+import yt_dlp, os
 from utils.custom_print import (p_status, p_terminate)
 from utils.common import update_download_history
 
@@ -23,6 +23,10 @@ async def handle_yt_download(configs, create_download_options, embed_metadata):
                     continue  # Skip processing for this video
 
                 file_path = ydl.prepare_filename(info)  # Get the file path
+                base_path, old_extension = os.path.splitext(file_path)
+                # Fix file path with actual download_format (file_extension)
+                file_path = f"{base_path}.{download_format}"   
+                
                 ydl.download([url])  # Download the video
 
                 # Create a dictionary to encapsulate all the information
