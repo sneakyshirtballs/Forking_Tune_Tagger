@@ -123,35 +123,50 @@ def fix_unique_ids(directory, file_extension):
     return video_ids
 
 def lookup_yt_vid(query):
-    try:
-        ydl_opts = {
-            'quiet': True,
-        }
-        if not query.startswith("http"): ydl_opts['default_search'] = 'ytsearch'
-        
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(query, download=False)
+    while True:
+        try:
+            ydl_opts = {
+                'quiet': True,
+            }
+            if not query.startswith("http"): ydl_opts['default_search'] = 'ytsearch'
             
-            video_info = info_dict.get('entries', [info_dict])[0]
-            if 'id' in video_info:
-                # Extract relevant metadata including channel name
-                p_status(f"[Detected] {video_info.get('title', '')}")
-                return {
-                    "title": video_info.get('title', ''),
-                    "video_id": video_info['id'],
-                    # Add more metadata fields as needed
-                }
-            
-            p_warning(f"Video unavailable: {query}")
-            choice = input("Do you want to continue processing other videos? (yes/no): ").strip().lower()
-            if choice != "yes":
-                p_terminate("Video unavailable: User chose to terminate")
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info_dict = ydl.extract_info(query, download=False)
+                
+                video_info = info_dict.get('entries', [info_dict])[0]
+                if 'id' in video_info:
+                    # Extract relevant metadata including channel name
+                    p_status(f"[Detected] {video_info.get('title', '')}")
+                    return {
+                        "title": video_info.get('title', ''),
+                        "video_id": video_info['id'],
+                        # Add more metadata fields as needed
+                    }
+                
+                p_warning(f"Video unavailable: {query}")
+                choice = input("What would you like to do?\n"
+                               "Enter 'N' to enter a new query,\n"
+                               "Enter 'S' to skip this video, or\n"
+                               "Enter 'T' to terminate. (N/S/T): ").strip().lower()
+                if choice == "n":
+                    query = input("Enter a new query: ").strip()
+                elif choice == "s":
+                    break  # Skip this video and move on to the next one
+                elif choice == "t":
+                    p_terminate("User chose to terminate")
 
-    except Exception as e:
-        p_warning(f"Error while looking up YouTube video {query}: {str(e)}")
-        choice = input("Do you want to continue processing other videos? (yes/no): ").strip().lower()
-        if choice != "yes":
-            p_terminate("Error Looking Up Video: User chose to terminate")
+        except Exception as e:
+            p_warning(f"Error while looking up YouTube video {query}: {str(e)}")
+            choice = input("What would you like to do?\n"
+                           "Enter 'N' to enter a new query,\n"
+                           "Enter 'S' to skip this video, or\n"
+                           "Enter 'T' to terminate. (N/S/T): ").strip().lower()
+            if choice == "n":
+                query = input("Enter a new query: ").strip()
+            elif choice == "s":
+                break  # Skip this video and move on to the next one
+            elif choice == "t":
+                p_terminate("Error Looking Up Video: User chose to terminate")
 
 
 # Helper Function - Get Video From Playlist
@@ -203,23 +218,7 @@ def download_thumbnail(url):
 def convert_webp_to_jpeg(webp_data):
     try:
         img = Image.open(io.BytesIO(webp_data))
-        
-        # # Calculate the coordinates for cropping the center part
-        # width, height = img.size
-        # if width > height:
-        #     left = (width - height) / 2
-        #     right = (width + height) / 2
-        #     top = 0
-        #     bottom = height
-        # else:
-        #     left = 0
-        #     right = width
-        #     top = (height - width) / 2
-        #     bottom = (height + width) / 2
-        
-        # # Crop the image to a square
-        # img = img.crop((left, top, right, bottom))
-        
+    
         # # Convert to JPEG
         jpeg_data = io.BytesIO()
         img.save(jpeg_data, 'JPEG')
