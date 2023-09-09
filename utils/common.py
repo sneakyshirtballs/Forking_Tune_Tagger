@@ -148,12 +148,10 @@ def lookup_yt_vid(query):
                                "Enter 'N' to enter a new query,\n"
                                "Enter 'S' to skip this video, or\n"
                                "Enter 'T' to terminate. (N/S/T): ").strip().lower()
-                if choice == "n":
-                    query = input("Enter a new query: ").strip()
-                elif choice == "s":
-                    break  # Skip this video and move on to the next one
-                elif choice == "t":
-                    p_terminate("User chose to terminate")
+                
+                if choice == "n": query = input("Enter a new query: ").strip()
+                elif choice == "s": return None
+                elif choice == "t": p_terminate("User chose to terminate")
 
         except Exception as e:
             p_warning(f"Error while looking up YouTube video {query}: {str(e)}")
@@ -161,12 +159,10 @@ def lookup_yt_vid(query):
                            "Enter 'N' to enter a new query,\n"
                            "Enter 'S' to skip this video, or\n"
                            "Enter 'T' to terminate. (N/S/T): ").strip().lower()
-            if choice == "n":
-                query = input("Enter a new query: ").strip()
-            elif choice == "s":
-                break  # Skip this video and move on to the next one
-            elif choice == "t":
-                p_terminate("Error Looking Up Video: User chose to terminate")
+            
+            if choice == "n": query = input("Enter a new query: ").strip()
+            elif choice == "s": return None  # Skip this video and move on to the next one
+            elif choice == "t": p_terminate("Error Looking Up Video: User chose to terminate")
 
 
 # Helper Function - Get Video From Playlist
