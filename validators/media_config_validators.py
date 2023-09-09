@@ -61,9 +61,10 @@ def validate_queries(queries):
         
         # If the interpreter comes here, it means It's a valid video link or search term
         video_info = lookup_yt_vid(query)
-        video_link = f"https://www.youtube.com/watch?v={video_info['video_id']}"
-        validated_queries.append(video_link)
-        continue
+        if video_info:
+            video_link = f"https://www.youtube.com/watch?v={video_info['video_id']}"
+            validated_queries.append(video_link)
+            continue
 
 
     return validated_queries
