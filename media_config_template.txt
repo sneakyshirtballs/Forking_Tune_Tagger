@@ -1,0 +1,26 @@
+# Media Config Template
+This is a template for configuring the `media_config.txt` file for the Forking Tune Tagger program.
+
+## Configuration Settings
+- **Download_Path**: Specify the path where you want to save downloaded media files.
+- **Media_Type**: Set the media type you want to download. For now, only "Music" is supported.
+- **Resolution**: Specify the desired resolution (if applicable). For now, only "n/a" is supported.
+- **Subtitles**: Indicate whether you want subtitles. For music, only "No" is supported.
+- **Format**: Choose the desired media format. For music, only `m4a` is supported for now.
+- **Queries**: List the YouTube *URLs* / *Search Query* / *Playlist* of the media you want to download. You can add multiple queries, some search terms, some links and/or playlists. **ONE** per line.
+
+**Important**: Before using this template, make sure to follow these steps:
+1. Rename this file from `media_config_template.txt` to `media_config.txt`.
+2. Configure the settings in `media_config.txt` as described below.
+3. Remove all other lines and keep the configurations only.
+
+
+Download_Path: /home/yourusername/Music
+Media_Type: Music
+Resolution: n/a
+Subtitles: No
+Format: m4a
+Queries:
+a sky full of stars
+https://youtu.be/Cqtvm_2exk8
+ac dc thunderstruck
