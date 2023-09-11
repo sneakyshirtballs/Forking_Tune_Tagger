@@ -4,14 +4,18 @@ from utils.common import lookup_yt_vid, get_videos_from_playlist
 
 # Function to validate download path
 def validate_download_path(path):
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    parent_directory = os.path.dirname(current_directory)
+
     # Check if the specified path exists
     if not os.path.exists(path):
-        p_terminate(f"The specified path '{path}' does not exist.")
+        p_terminate(f"The specified download path '{path}' does not exist.")
     
     # Check if 'media_config.txt' exists in the specified path
-    media_config_path = os.path.join(path, 'media_config.txt')
+    media_config_path = os.path.join(parent_directory, 'media_config.txt')
+    print(media_config_path)
     if not os.path.isfile(media_config_path):
-        p_terminate("The 'media_config.txt' file is not available in the specified path.")
+        p_terminate("'media_config.txt' file was not found in program directory.")
     
     # If both checks pass, return True
     return True
