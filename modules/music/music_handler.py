@@ -36,7 +36,7 @@ async def handle_music(configs):
 async def detect_music_and_embed_metadata(file_info):
     shazam= Shazam() # initialize shazam
 
-    file_path, download_format = (file_info['file_path'], file_info['download_format'])    
+    file_path = file_info['file_path'] 
     yt_title, yt_channel_name, yt_thumbnail = (file_info['title'], file_info['channel_name'], file_info['thumbnail'])
     
     yt_track_info = {
