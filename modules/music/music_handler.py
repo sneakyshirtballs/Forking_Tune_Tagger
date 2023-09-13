@@ -3,8 +3,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
 from mutagen.mp4 import MP4, MP4Cover
 from shazamio import Shazam
-from utils.custom_print import ( p_success, p_warning)
-from utils.common import (write_file_outtmpl, download_thumbnail)
+from utils.custom_print import p_success, p_warning
+from utils.common import write_file_outtmpl, download_thumbnail
 from modules.common import yt_download_handler
 
 # Load environment variables from .env file
