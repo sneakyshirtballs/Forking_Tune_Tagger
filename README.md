@@ -32,6 +32,3 @@ To get started with Forking Tune Tagger, follow these steps:
 1. Rename [media_config_template.txt](media_config_template.txt) to `media_config.txt`.
 2. Configure the settings in `media_config.txt` as described below.
 3. Remove all other lines and keep the configurations only.
-
-## Contributing
-I'm open to any contribution to this repository, if anyone's interested, you can simply create a pull request providing your updated/suggested code and I will review and merge it as soon as possible.
