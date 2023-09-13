@@ -36,7 +36,6 @@ async def handle_yt_download(configs, create_download_options, embed_metadata):
                     'title': info.get('title', 'Unknown Title'),
                     'channel_name': info.get('uploader', 'Unknown Channel'),
                     'thumbnail': get_channel_icon_url(info.get("channel_url"), info.get("thumbnail")),
-                    'download_format': download_format
                 }
                 await embed_metadata(file_info)
 
