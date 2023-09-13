@@ -1,6 +1,6 @@
 import asyncio, os
 from utils.config_parser import parse_config_file
-from utils.custom_print import (p_status, p_terminate, p_warning, p_success)
+from utils.custom_print import p_terminate, p_success
 from modules.music import music_handler
 
 async def main():
